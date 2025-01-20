@@ -1,4 +1,16 @@
-const { getProductById } = require('./ProductsModel');
+const { getAllProducts, getProductById } = require('./ProductsModel');
+
+
+async function getProducts(req, res) {
+    try {
+        const products = await getAllProducts();
+        res.json(products);
+    } catch(error) {
+        console.error("Error al obtener los productos", error);
+        res.status(500).json({ message: "Error al obtener los productos" });
+    }
+}
+
 
 async function getProduct(req, res) {
     const { id } = req.params;
@@ -11,5 +23,6 @@ async function getProduct(req, res) {
 }
 
 module.exports = {
+    getProducts,
     getProduct,
 }
