@@ -1,6 +1,6 @@
 import './listProducts.css';
 import React, { useEffect, useState } from 'react';
-//import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 interface Product {
     Product_id: string,
@@ -34,13 +34,13 @@ const ListProducts: React.FC = () => {
                 setError('Error desconocido');
             }
         } finally {
-            setLoading(true);
+            setLoading(false);
         }
     };
 
     useEffect(() => {
         fetchProducts();
-    })
+    }, []);
 
 
     if (loading) {
@@ -70,6 +70,7 @@ const ListProducts: React.FC = () => {
                 <tbody>
                     {products.map((product) => (
                         <tr key={product.Product_id}>
+                            <td>{product.Product_id}</td>
                             <td>{product.ProductName}</td>
                             <td>{product.UnitPrice}</td>
                             <td>{product.Quantity}</td>
@@ -79,8 +80,11 @@ const ListProducts: React.FC = () => {
                     ))}
                 </tbody>
             </table>
+            <Link to={'/Products/addProduct'}>
+                <button>ADD PRODUCT</button>
+            </Link>
         </div>
-    )
+    );
 }
 
 export default ListProducts;

@@ -6,6 +6,7 @@ import ListCustomers from './Components/Customers/listCustomers/listCustomers';
 import AddCustomer from './Components/Customers/addCustomer/addCustomer';
 import EditCustomer from './Components/Customers/editCustomer/editCustomer';
 import ListProducts from './Components/Products/listProducts/listProducts';
+import AddProduct from './Components/Products/addProducts/addProducts';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Route path="/Customers/addCustomer" element={<AddCustomer />} />
         <Route path="/Customers/editCustomer/:id" element={<EditCustomer />} />
         <Route path="/Products" element={<ListProducts />} />
+        <Route path="/Products/addProduct" element={<AddProduct />} />
         <Route path="/orders" element={<h2>Gestión de Pedidos</h2>} />
       </Routes>
     </Router>

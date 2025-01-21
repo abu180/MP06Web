@@ -1,4 +1,4 @@
-const { getAllProducts, getProductById } = require('./ProductsModel');
+const { getAllProducts, getProductById, addProductValues } = require('./ProductsModel');
 
 
 async function getProducts(req, res) {
@@ -22,7 +22,26 @@ async function getProduct(req, res) {
     }
 }
 
+
+async function addProduct(req, res) {
+    const { ProductName, UnitPrice, Quantity, UnitsOnOrder } = req.body;
+
+    try {
+        const newProduct = await addProductValues({
+            ProductName,
+            UnitPrice,
+            Quantity,
+            UnitsOnOrder,
+        });
+        res.status(201).json(newProduct);
+    } catch(error) {
+        res.status(500).json({error: 'Error al añadir el producto, l'});
+    };
+};
+
+
 module.exports = {
     getProducts,
     getProduct,
+    addProduct,
 }
