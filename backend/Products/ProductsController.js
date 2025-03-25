@@ -1,4 +1,8 @@
-const { getAllProducts, getProductById, addProductValues } = require('./ProductsModel');
+const { 
+    getAllProducts, 
+    getProductById, 
+    addProductValues 
+} = require('./ProductsModel');
 
 
 async function getProducts(req, res) {

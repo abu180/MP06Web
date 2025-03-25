@@ -1,69 +1,75 @@
+// src/Components/Customers/listCustomers/listCustomers.tsx
 import './listCustomers.css';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-//INTERFAZ PARA DATOS DE LOS CLIENTES
 interface Customer {
   Customer_id: number;
   Name: string;
-  Surname: string,
-  Phone: string,
-  Adress: string,
-  Country: string,
-  PostalCode: string
+  Surname: string;
+  Phone: string;
+  Adress: string;
+  Country: string;
+  PostalCode: string;
 }
 
 const ListCustomers: React.FC = () => {
-  
-  // Tipamos el estado de los clientes como un array de Customer
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
+  const [inactiveCount, setInactiveCount] = useState<number>(0);
 
-  //DATOS DESDE BACKEND
+  // Función para obtener clientes activos desde el backend
   const fetchCustomers = async () => {
     try {
-        //URL DATOS
-        const response = await fetch('http://localhost:8000/Customers');
-
-        if (!response.ok) {
-            throw new Error('Error al obtener los clientes');
-        }
-
-        //DATOS EN FORMATO JSON
-        const data: Customer[] = await response.json();
-        setCustomers(data);
-
+      const response = await fetch('http://localhost:8000/Customers');
+      if (!response.ok) {
+        throw new Error('Error al obtener los clientes');
+      }
+      const data: Customer[] = await response.json();
+      setCustomers(data);
     } catch (err: unknown) {
-    
-        if (err instanceof Error) {
-            setError(err.message);
-        } else {
-            setError('Error desconocido');
-        }
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Error desconocido');
+      }
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
+  // Función para obtener clientes eliminados (inactivos)
+  const fetchRemovedCustomers = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/Customers/removed');
+      if (!response.ok) {
+        throw new Error('Error al obtener los clientes eliminados');
+      }
+      const data: Customer[] = await response.json();
+      setInactiveCount(data.length);
+    } catch (err: unknown) {
+      console.error(err);
+    }
+  };
+
+  // Función para eliminar un cliente: actualiza is_active a 0
   const handleDelete = async (id: number) => {
     const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este cliente?");
-    if(!confirmDelete) {
-      return;
-    }
+    if (!confirmDelete) return;
 
     try {
       const response = await fetch(`http://localhost:8000/Customers/deleteCustomer/${id}`, {
         method: 'DELETE',
-      });  
-
+      });
       if (!response.ok) {
         throw new Error('Error al eliminar el cliente');
       }
-
       setSuccess(true);
-      fetchCustomers(); 
+      // Actualiza las listas
+      fetchCustomers();
+      fetchRemovedCustomers();
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -75,6 +81,7 @@ const ListCustomers: React.FC = () => {
 
   useEffect(() => {
     fetchCustomers();
+    fetchRemovedCustomers();
   }, []);
 
   if (loading) {
@@ -88,8 +95,18 @@ const ListCustomers: React.FC = () => {
   return (
     <div>
       <h1>CUSTOMERS</h1>
-      {error && <div>Error: {error}</div>}
-      {success && <div>Cliente eliminado con éxito</div>}
+      <div style={{ marginBottom: '1rem' }}>
+        {/* Botón que redirige a la lista de clientes eliminados con la cantidad */}
+        <Link to="/Customers/removed">
+          <button>Clientes de baja ({inactiveCount})</button>
+        </Link>
+        {" "}
+        {/* Botón que muestra la cantidad de clientes activos */}
+        <button>Clientes activos ({customers.length})</button>
+      </div>
+
+      {error && <div style={{ color: 'red' }}>Error: {error}</div>}
+      {success && <div style={{ color: 'green' }}>Cliente eliminado con éxito</div>}
       <table>
         <thead>
           <tr>
@@ -117,16 +134,18 @@ const ListCustomers: React.FC = () => {
                 <Link to={`/Customers/editCustomer/${customer.Customer_id}`}>
                   <button>EDIT</button>
                 </Link>
-                |
+                {" | "}
                 <button onClick={() => handleDelete(customer.Customer_id)}>DELETE</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <Link to={'/Customers/addCustomer'}>
-        <button>ADD CUSTOMER</button>
-      </Link>
+      <div style={{ marginTop: '1rem' }}>
+        <Link to="/Customers/addCustomer">
+          <button>ADD CUSTOMER</button>
+        </Link>
+      </div>
     </div>
   );
 };

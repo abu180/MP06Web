@@ -2,12 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
+interface CustomerData {
+  Name: string;
+  Surname: string;
+  Phone: string;
+  Adress: string;
+  Country: string;
+  PostalCode: string;
+}
 
 const EditCustomer: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
-  const [customer, setCustomer] = useState({
+  const [customer, setCustomer] = useState<CustomerData>({
     Name: '',
     Surname: '',
     Phone: '',
@@ -43,10 +51,10 @@ const EditCustomer: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     const confirmEdit = window.confirm("¿Estás seguro de que deseas actualizar este cliente?");
-    if(!confirmEdit) {
+    if (!confirmEdit) {
       return;
     }
-    
+
     e.preventDefault();
     setError(null);
     setSuccess(false);
@@ -63,7 +71,6 @@ const EditCustomer: React.FC = () => {
       }
 
       setSuccess(true);
-
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
@@ -122,7 +129,7 @@ const EditCustomer: React.FC = () => {
         />
         <button type="submit">Actualizar Cliente</button>
         <Link to="/Customers">
-          <button>BACK</button>
+          <button type="button">BACK</button>
         </Link>
       </form>
       {error && <p style={{ color: 'red' }}>{error}</p>}

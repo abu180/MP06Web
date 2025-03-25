@@ -1,9 +1,5 @@
 require('dotenv').config({ path: './dbVariables.env' });
 
-console.log('Conectando con la base de datos...');
-console.log(`Usuario: ${process.env.DB_USER}`);
-console.log(`Base de datos: ${process.env.DB_NAME}`);
-
 const mysql = require('mysql2/promise');
 
 const pool = mysql.createPool({
@@ -13,6 +9,8 @@ const pool = mysql.createPool({
     database: process.env.DB_NAME,
     port: 3306,
 });
+
+
 
 
 module.exports = pool;

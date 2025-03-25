@@ -1,8 +1,8 @@
+// src/Components/Customers/addCustomer.tsx
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-
-const AddCustomer: React.FC = () => {
+const addCustomer: React.FC = () => {
   const [Name, setName] = useState<string>('');
   const [Surname, setSurname] = useState<string>('');
   const [Phone, setPhone] = useState<string>('');
@@ -23,7 +23,14 @@ const AddCustomer: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ Name, Surname, Phone, Adress, Country, PostalCode }),
+        body: JSON.stringify({
+          Name,
+          Surname,
+          Phone,
+          Adress,
+          Country,
+          PostalCode,
+        }),
       });
 
       if (!response.ok) {
@@ -31,6 +38,7 @@ const AddCustomer: React.FC = () => {
       }
 
       setSuccess(true);
+      // Limpiar el formulario
       setName('');
       setSurname('');
       setPhone('');
@@ -46,7 +54,6 @@ const AddCustomer: React.FC = () => {
     }
   };
 
-
   return (
     <div>
       <h2>Agregar Cliente</h2>
@@ -61,7 +68,7 @@ const AddCustomer: React.FC = () => {
           />
         </div>
         <div>
-          <label>Surname:</label>
+          <label>Apellidos:</label>
           <input
             type="text"
             value={Surname}
@@ -70,7 +77,7 @@ const AddCustomer: React.FC = () => {
           />
         </div>
         <div>
-          <label>Phone:</label>
+          <label>Teléfono:</label>
           <input
             type="text"
             value={Phone}
@@ -79,7 +86,7 @@ const AddCustomer: React.FC = () => {
           />
         </div>
         <div>
-          <label>Adress:</label>
+          <label>Dirección:</label>
           <input
             type="text"
             value={Adress}
@@ -88,7 +95,7 @@ const AddCustomer: React.FC = () => {
           />
         </div>
         <div>
-          <label>Country:</label>
+          <label>País:</label>
           <input
             type="text"
             value={Country}
@@ -97,7 +104,7 @@ const AddCustomer: React.FC = () => {
           />
         </div>
         <div>
-          <label>Postal Code:</label>
+          <label>Código Postal:</label>
           <input
             type="text"
             value={PostalCode}
@@ -105,10 +112,9 @@ const AddCustomer: React.FC = () => {
             required
           />
         </div>
-
-        <button type="submit">ADD</button>
+        <button type="submit">Agregar Cliente</button>
         <Link to="/Customers">
-          <button>BACK</button>
+          <button type="button">Regresar</button>
         </Link>
       </form>
       {error && <p style={{ color: 'red' }}>{error}</p>}
@@ -117,4 +123,4 @@ const AddCustomer: React.FC = () => {
   );
 };
 
-export default AddCustomer;
+export default addCustomer;
